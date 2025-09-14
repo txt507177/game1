@@ -41,7 +41,7 @@ mouse.locked = me
 
 is_jumping = False
 jump_velocity = 1
-gravity = -0.5 # 重力加速度，值越小重力越大
+gravity = -0.5
 
 def update():
     global me, is_jumping, jump_velocity
@@ -109,3 +109,4 @@ def update():
 print(507171)    
 
 ua.run()
+
