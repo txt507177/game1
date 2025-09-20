@@ -1,15 +1,17 @@
 from ursina import *
 import math
-window.position = (0,25)
+window.position = (0,0)
 window.size = (800, 600)
-leg1 = 0
+up1=False
+leg1 = 0.5
 me = True
 ua = Ursina()
 cube1=open("cube1.cube")
 cube_list = eval(cube1.read())
-player_speed = 0.09
+cube_list2 = cube_list
+player_speed = 0.01
 player = Entity(
-    model='cube', 
+    model='cube',
     color= color.gray,
     position=(0, 1.5, 0),
     scale=(1, 2, 1),
@@ -41,12 +43,16 @@ mouse.locked = me
 
 is_jumping = False
 jump_velocity = 1
-gravity = -0.5
+gravity = -1
+
 
 def update():
-    global me, is_jumping, jump_velocity
-
-
+    global me, is_jumping, jump_velocity, up1,cube_list ,cube_list2 ,first_person
+    if cube_list != cube_list2:
+        up1 = True
+    if up1 == True:
+        cube_list = cube_list2
+        up1 = False
     if me:
         camera.rotation_y += mouse.velocity[0] * mouse_sensitivity
         camera.rotation_x -= mouse.velocity[1] * mouse_sensitivity
@@ -59,7 +65,7 @@ def update():
 
     
     if first_person:
-        camera.position = player.position
+        camera.position = player.position + Vec3(0,leg1,0)
         camera.look_at(player.position + Vec3(0, leg1, 0))
 
     
@@ -84,6 +90,9 @@ def update():
     if held_keys['space'] and not is_jumping:
         is_jumping = True
         jump_velocity = 1
+    if held_keys['F4']:
+        first_person = False
+        
 
     
     if is_jumping:
@@ -91,10 +100,7 @@ def update():
         jump_velocity += gravity * time.dt
         hit_info = player.intersects()
         if hit_info.hit and jump_velocity < 0:
-            
-            jump_velocity = 0
-            
-            player.position += Vec3(0,1.5,0)
+            jump_velocity = 0 
             is_jumping = False
         else:
             player.position -= Vec3(0, 0.5, 0)
@@ -106,7 +112,7 @@ def update():
         mouse.locked = me
     if player.position.y < -100:
         player.position = Vec3(0, 1.5, 0)
-print(507171)    
-
+print(camera.position)    
+is_jumping = False
 ua.run()
 
